@@ -60,14 +60,14 @@ public class JwtService {
     }
 
     // Генерация токена
-    public String generateToken(String username) {
+    public String generateToken(String username, Long id) {
         Map<String, Object> claims = new HashMap<>();
         // Добавьте логику для получения роли пользователя, если нужно
-        claims.put("role", "USER"); // Пример
+        claims.put("role", "USER");
+        claims.put("id", id);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 часов
                 .signWith(privateKey, SignatureAlgorithm.RS256)
