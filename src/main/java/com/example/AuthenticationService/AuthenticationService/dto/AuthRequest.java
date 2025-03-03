@@ -2,11 +2,11 @@ package com.example.AuthenticationService.AuthenticationService.dto;
 
 public class AuthRequest {
 
-    private String username;
+    private String name;
     private String password;
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String name) {
+        this.name = name;
     }
 
     public void setPassword(String password) {
@@ -14,7 +14,7 @@ public class AuthRequest {
     }
 
     public String getUsername() {
-        return username;
+        return name;
     }
 
     public String getPassword() {
