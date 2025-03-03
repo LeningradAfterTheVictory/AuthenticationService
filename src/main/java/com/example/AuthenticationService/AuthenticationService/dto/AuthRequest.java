@@ -3,15 +3,15 @@ package com.example.AuthenticationService.AuthenticationService.dto;
 public class AuthRequest {
 
     private Long id;
-    private String name;
+    private String username;
     private String password;
 
     public void setId(Long id) {
       this.id = id;
     }
 
-    public void setUsername(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
@@ -23,7 +23,7 @@ public class AuthRequest {
     }
 
     public String getUsername() {
-        return name;
+        return username;
     }
 
     public String getPassword() {

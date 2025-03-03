@@ -62,7 +62,7 @@ public class JwtService {
     // Генерация токена
     public String generateToken(String username, Long id) {
         Map<String, Object> claims = new HashMap<>();
-        // Добавьте логику для получения роли пользователя, если нужно
+        
         claims.put("role", "USER");
         claims.put("id", id);
 
