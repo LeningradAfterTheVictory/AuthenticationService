@@ -24,8 +24,14 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public String addNewUser(@RequestBody UserCredential user) {
-        return service.saveUser(user);
+    public ResponseEntity<String> addNewUser(@RequestBody UserCredential user) {
+        String result = service.saveUser(user);
+
+        if(result.equals("Success")) {
+            return ResponseEntity.ok(result);
+        }
+
+        return ResponseEntity.internalServerError().body(result);
     }
 
     @PostMapping("/token")

@@ -33,10 +33,15 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
         return findUser(query, email);
     }
 
-    public void save(UserCredential userCredential) {
+    public String save(UserCredential userCredential) {
         String query = "INSERT INTO users (name, mail, password, role) VALUES (?, ?, ?, 'USER') RETURNING id";
+        String queryCheck = "SELECT * FROM users WHERE name=?";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            if(findUser(queryCheck, userCredential.getName()).isPresent()) {
+                return "Fail";
+            }
+
             stmt.setString(1, userCredential.getName());
             stmt.setString(2, userCredential.getEmail());
             stmt.setString(3, userCredential.getPassword());
@@ -46,9 +51,12 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
             if (rs.next()) {
                 userCredential.setId(rs.getInt(1));
             }
+
+            return "Success";
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return "Fail";
     }
 
     public String getRoleForUser(String userName) {
