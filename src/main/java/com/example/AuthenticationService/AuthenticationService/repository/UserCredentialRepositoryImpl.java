@@ -29,7 +29,7 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 UserCredential userCredential = new UserCredential();
-                userCredential.setId(rs.getInt("id"));
+                userCredential.setId(rs.getLong("id"));
                 userCredential.setName(rs.getString("name"));
                 userCredential.setEmail(rs.getString("mail"));
                 userCredential.setPassword(rs.getString("password"));
@@ -57,7 +57,7 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
 
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
-                userCredential.setId(rs.getInt(1));
+                userCredential.setId(rs.getLong(1));
             }
 
             return "Success";
@@ -74,7 +74,7 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 UserCredential userCredential = new UserCredential();
-                userCredential.setId(rs.getInt("id"));
+                userCredential.setId(rs.getLong("id"));
                 userCredential.setName(rs.getString("name"));
                 userCredential.setEmail(rs.getString("mail"));
                 userCredential.setPassword(rs.getString("password"));

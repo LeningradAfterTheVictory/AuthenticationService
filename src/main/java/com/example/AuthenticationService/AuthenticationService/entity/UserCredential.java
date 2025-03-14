@@ -2,12 +2,12 @@ package com.example.AuthenticationService.AuthenticationService.entity;
 
 public class UserCredential {
 
-    private int id;
+    private Long id;
     private String name;
     private String email;
     private String password;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -23,7 +23,7 @@ public class UserCredential {
         return password;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

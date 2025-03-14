@@ -7,6 +7,7 @@ import com.example.AuthenticationService.AuthenticationService.service.AuthServi
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,11 +25,16 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<String> addNewUser(@RequestBody UserCredential user) {
+    public ResponseEntity<String> addNewUser(@RequestBody UserCredential user, HttpServletResponse response) {
+        String password = user.getPassword();
         String result = service.saveUser(user);
 
         if(result.equals("Success")) {
-            return ResponseEntity.ok(result);
+            return getToken(new AuthRequest(
+                   user.getId(),
+                   user.getName(),
+                    password
+            ), response);
         }
 
         return ResponseEntity.status(422).body(result);
@@ -36,6 +42,9 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<String> getToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
+        Long userId = service.getUserIdByName(authRequest.getUsername());
+        authRequest.setId(userId);
+
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
             Cookie cookie = new Cookie("jwtAuth", "token");

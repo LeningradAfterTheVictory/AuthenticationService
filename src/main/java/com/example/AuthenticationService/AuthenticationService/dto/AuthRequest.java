@@ -6,6 +6,12 @@ public class AuthRequest {
     private String username;
     private String password;
 
+    public AuthRequest(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
     public void setId(Long id) {
       this.id = id;
     }
