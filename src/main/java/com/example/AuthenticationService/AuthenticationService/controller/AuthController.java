@@ -36,23 +36,17 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<String> getToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        UserCredential userCredential = service.findByUsername(authRequest.getUsername());
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        if (authenticate.isAuthenticated()) {
+            Cookie cookie = new Cookie("jwtAuth", "token");
+            cookie.setHttpOnly(true);
+            cookie.setPath("/api/authentication");
 
-        if (userCredential != null && userCredential.getEmail().equals(authRequest.getEmail())) {
-            Authentication authenticate = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-
-            if (authenticate.isAuthenticated()) {
-                Cookie cookie = new Cookie("jwtAuth", "token");
-                cookie.setHttpOnly(true);
-                cookie.setPath("/api/authentication");
-
-                response.addCookie(cookie);
-                return ResponseEntity.ok(service.generateToken(authRequest.getUsername(), authRequest.getId()));
-            }
+            response.addCookie(cookie);
+            return ResponseEntity.ok(service.generateToken(authRequest.getUsername(), authRequest.getId()));
+        } else {
+            return ResponseEntity.status(422).body("Unauthorized");
         }
-        return ResponseEntity.status(422).body("Unauthorized");
     }
 
     @GetMapping("/validate")

@@ -18,19 +18,27 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
     @Value("${spring.datasource.password}")
     private String password;
 
-    public Optional<UserCredential> findByName(String name) {
-        String query = "SELECT * FROM users WHERE name = ?";
-        return findUser(query, name);
-    }
+    public Optional<UserCredential> findByNameOrEmail(String name) {
+        String query = "SELECT * FROM users WHERE name = ? OR mail = ?";
 
-    public Optional<UserCredential> findById(Long id) {
-        String query = "SELECT * FROM users WHERE id = ?";
-        return findUser(query, id);
-    }
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, name);
+            stmt.setObject(2, name);
 
-    public Optional<UserCredential> findByEmail(String email) {
-        String query = "SELECT * FROM users WHERE mail = ?";
-        return findUser(query, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                UserCredential userCredential = new UserCredential();
+                userCredential.setId(rs.getInt("id"));
+                userCredential.setName(rs.getString("name"));
+                userCredential.setEmail(rs.getString("mail"));
+                userCredential.setPassword(rs.getString("password"));
+                return Optional.of(userCredential);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
     public String save(UserCredential userCredential) {
@@ -57,23 +65,6 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
             e.printStackTrace();
         }
         return "Fail";
-    }
-
-    public String getRoleForUser(String userName) {
-        String query = "SELECT role FROM users WHERE name=?";
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, userName);
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("role");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return "No role";
     }
 
     private Optional<UserCredential> findUser(String query, Object param) {

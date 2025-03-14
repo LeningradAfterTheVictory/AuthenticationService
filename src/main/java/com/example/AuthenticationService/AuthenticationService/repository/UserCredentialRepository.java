@@ -5,9 +5,6 @@ import com.example.AuthenticationService.AuthenticationService.entity.UserCreden
 import java.util.Optional;
 
 public interface UserCredentialRepository {
-    Optional<UserCredential> findByName(String username);
-    Optional<UserCredential> findById(Long id);
-    Optional<UserCredential> findByEmail(String email);
+    Optional<UserCredential> findByNameOrEmail(String username);
     String save(UserCredential userCredential);
-    String getRoleForUser(String userName);
 }

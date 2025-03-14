@@ -23,10 +23,6 @@ public class AuthService {
         return repository.save(credential);
     }
 
-    public UserCredential findByUsername(String name) {
-        return repository.findByName(name).get();
-    }
-
     public String generateToken(String username, Long id) {
         return jwtService.generateToken(username, id);
     }
