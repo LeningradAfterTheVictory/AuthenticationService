@@ -31,22 +31,28 @@ public class AuthController {
             return ResponseEntity.ok(result);
         }
 
-        return ResponseEntity.internalServerError().body(result);
+        return ResponseEntity.status(422).body(result);
     }
 
     @PostMapping("/token")
     public ResponseEntity<String> getToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        if (authenticate.isAuthenticated()) {
-            Cookie cookie = new Cookie("jwtAuth", "token");
-            cookie.setHttpOnly(true);
-            cookie.setPath("/api/authentication");
+        UserCredential userCredential = service.findByUsername(authRequest.getUsername());
 
-            response.addCookie(cookie);
-            return ResponseEntity.ok(service.generateToken(authRequest.getUsername(), authRequest.getId()));
-        } else {
-            throw new RuntimeException("invalid access");
+        if (userCredential != null && userCredential.getEmail().equals(authRequest.getEmail())) {
+            Authentication authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            );
+
+            if (authenticate.isAuthenticated()) {
+                Cookie cookie = new Cookie("jwtAuth", "token");
+                cookie.setHttpOnly(true);
+                cookie.setPath("/api/authentication");
+
+                response.addCookie(cookie);
+                return ResponseEntity.ok(service.generateToken(authRequest.getUsername(), authRequest.getId()));
+            }
         }
+        return ResponseEntity.status(422).body("Unauthorized");
     }
 
     @GetMapping("/validate")

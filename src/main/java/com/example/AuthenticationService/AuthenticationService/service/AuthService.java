@@ -19,8 +19,12 @@ public class AuthService {
 
     public String saveUser(UserCredential credential) {
         credential.setPassword(passwordEncoder.encode(credential.getPassword()));
-        repository.save(credential);
-        return "user added to the system";
+
+        return repository.save(credential);
+    }
+
+    public UserCredential findByUsername(String name) {
+        return repository.findByName(name).get();
     }
 
     public String generateToken(String username, Long id) {
