@@ -47,15 +47,12 @@ public class AuthController {
 
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-            String token = service.generateToken(authRequest.getUsername(), authRequest.getId());
-
-            Cookie cookie = new Cookie("jwtAuth", token);
+            Cookie cookie = new Cookie("jwtAuth", "token");
             cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(1000 * 60 * 60 * 10);
+            cookie.setPath("/api/authentication");
 
             response.addCookie(cookie);
-            return ResponseEntity.ok("Ok");
+            return ResponseEntity.ok(service.generateToken(authRequest.getUsername(), authRequest.getId()));
         } else {
             return ResponseEntity.status(422).body("Unauthorized");
         }
