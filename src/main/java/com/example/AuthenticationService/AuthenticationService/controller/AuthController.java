@@ -69,7 +69,8 @@ public class AuthController {
     @Operation(summary = "Получить токен аутентификации (используется для входа пользователя)", description = "Генерирует JWT токен при корректных учетных данных и возвращает в cookie")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Токен успешно получен"),
-            @ApiResponse(responseCode = "422", description = "Неверные учетные данные")
+            @ApiResponse(responseCode = "422", description = "Неверные учетные данные"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
     public ResponseEntity<String> getToken(
             @Parameter(description = "Учетные данные пользователя", required = true)
