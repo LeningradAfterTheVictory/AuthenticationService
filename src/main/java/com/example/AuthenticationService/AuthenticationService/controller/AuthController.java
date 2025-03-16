@@ -32,7 +32,9 @@ public class AuthController {
     @Operation(summary = "Регистрация нового пользователя", description = "Создает новую учетную запись пользователя и возвращает токен аутентификации в cookie в случае успеха")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь успешно зарегистрирован"),
-            @ApiResponse(responseCode = "422", description = "Не удалось зарегистрировать пользователя")
+            @ApiResponse(responseCode = "422", description = "Не удалось зарегистрировать пользователя"),
+            @ApiResponse(responseCode = "400", description = "В начале или в конце логина/пароля есть пробел"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
     public ResponseEntity<String> addNewUser(
             @Parameter(description = "Параметры нового пользователя", required = true)
@@ -40,6 +42,14 @@ public class AuthController {
             HttpServletResponse response
     ) {
         String password = user.getPassword();
+
+        if(password.endsWith(" ") || password.startsWith(" ")) {
+            return ResponseEntity.status(400).body("Password");
+        }
+        if(user.getName().startsWith(" ") || user.getName().endsWith(" ")) {
+            return ResponseEntity.status(400).body("Login");
+        }
+
         Long id = service.saveUser(user);
 
         if (id != -1L) {
