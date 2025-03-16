@@ -30,7 +30,11 @@ public class AuthConfig {
                     requestMatchers(
                             "/api/authentication/register",
                             "/api/authentication/token",
-                            "/api/authentication/validate").permitAll()
+                            "/api/authentication/validate",
+                            "/swagger-ui/**", 
+                            "/v3/api-docs/**", 
+                            "/swagger-resources/**", 
+                            "/webjars/**").permitAll()
                 )
                 .build();
     }
