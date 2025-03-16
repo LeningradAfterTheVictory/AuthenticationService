@@ -1,6 +1,7 @@
 package com.example.AuthenticationService.AuthenticationService.repository;
 
 import com.example.AuthenticationService.AuthenticationService.entity.UserCredential;
+import com.example.AuthenticationService.AuthenticationService.entity.UserCredentialDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -41,13 +42,13 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
         return Optional.empty();
     }
 
-    public String save(UserCredential userCredential) {
+    public Long save(UserCredentialDTO userCredential) {
         String query = "INSERT INTO users (name, mail, password, role) VALUES (?, ?, ?, 'USER') RETURNING id";
         String queryCheck = "SELECT * FROM users WHERE name=?";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             if(findUser(queryCheck, userCredential.getName()).isPresent()) {
-                return "Fail";
+                return -1L;
             }
 
             stmt.setString(1, userCredential.getName());
@@ -57,14 +58,13 @@ public class UserCredentialRepositoryImpl implements UserCredentialRepository {
 
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
-                userCredential.setId(rs.getLong(1));
+                return rs.getLong("id");
             }
 
-            return "Success";
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "Fail";
+        return -1L;
     }
 
     private Optional<UserCredential> findUser(String query, Object param) {

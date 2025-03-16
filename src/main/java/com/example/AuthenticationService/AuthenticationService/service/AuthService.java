@@ -1,6 +1,7 @@
 package com.example.AuthenticationService.AuthenticationService.service;
 
 import com.example.AuthenticationService.AuthenticationService.entity.UserCredential;
+import com.example.AuthenticationService.AuthenticationService.entity.UserCredentialDTO;
 import com.example.AuthenticationService.AuthenticationService.repository.UserCredentialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,7 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
-    public String saveUser(UserCredential credential) {
+    public Long saveUser(UserCredentialDTO credential) {
         credential.setPassword(passwordEncoder.encode(credential.getPassword()));
 
         return repository.save(credential);

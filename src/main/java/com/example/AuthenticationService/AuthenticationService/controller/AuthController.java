@@ -2,6 +2,7 @@ package com.example.AuthenticationService.AuthenticationService.controller;
 
 import com.example.AuthenticationService.AuthenticationService.dto.AuthRequest;
 import com.example.AuthenticationService.AuthenticationService.entity.UserCredential;
+import com.example.AuthenticationService.AuthenticationService.entity.UserCredentialDTO;
 import com.example.AuthenticationService.AuthenticationService.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,16 +36,15 @@ public class AuthController {
     })
     public ResponseEntity<String> addNewUser(
             @Parameter(description = "Параметры нового пользователя", required = true)
-            @RequestBody UserCredential user,
+            @RequestBody UserCredentialDTO user,
             HttpServletResponse response
     ) {
         String password = user.getPassword();
-        String result = service.saveUser(user);
+        Long id = service.saveUser(user);
 
-        if ("Success".equals(result)) {
+        if (id != -1L) {
             return getToken(
                     new AuthRequest(
-                            user.getId(),
                             user.getName(),
                             password
                     ),
@@ -52,11 +52,11 @@ public class AuthController {
             );
         }
 
-        return ResponseEntity.status(422).body(result);
+        return ResponseEntity.status(422).body("Fail");
     }
 
     @PostMapping("/token")
-    @Operation(summary = "Получить токен аутентификации", description = "Генерирует JWT токен при корректных учетных данных и возвращает в cookie")
+    @Operation(summary = "Получить токен аутентификации (используется для входа пользователя)", description = "Генерирует JWT токен при корректных учетных данных и возвращает в cookie")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Токен успешно получен"),
             @ApiResponse(responseCode = "422", description = "Неверные учетные данные")
@@ -67,7 +67,6 @@ public class AuthController {
             HttpServletResponse response
     ) {
         Long userId = service.getUserIdByName(authRequest.getUsername());
-        authRequest.setId(userId);
 
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -77,7 +76,7 @@ public class AuthController {
         );
 
         if (authenticate.isAuthenticated()) {
-            String token = service.generateToken(authRequest.getUsername(), authRequest.getId());
+            String token = service.generateToken(authRequest.getUsername(), userId);
 
             Cookie cookie = new Cookie("jwtAuth", token);
             cookie.setHttpOnly(true);
