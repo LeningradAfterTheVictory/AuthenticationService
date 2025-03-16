@@ -28,7 +28,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    @Operation(summary = "Регистрация нового пользователя", description = "Создает новую учетную запись пользователя и возвращает токен аутентификации в случае успеха")
+    @Operation(summary = "Регистрация нового пользователя", description = "Создает новую учетную запись пользователя и возвращает токен аутентификации в cookie в случае успеха")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь успешно зарегистрирован"),
             @ApiResponse(responseCode = "422", description = "Не удалось зарегистрировать пользователя")
@@ -56,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    @Operation(summary = "Получить токен аутентификации", description = "Генерирует JWT токен при корректных учетных данных")
+    @Operation(summary = "Получить токен аутентификации", description = "Генерирует JWT токен при корректных учетных данных и возвращает в cookie")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Токен успешно получен"),
             @ApiResponse(responseCode = "422", description = "Неверные учетные данные")
