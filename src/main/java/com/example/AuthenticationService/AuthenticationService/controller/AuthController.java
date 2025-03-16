@@ -89,17 +89,4 @@ public class AuthController {
             return ResponseEntity.status(422).body("Unauthorized");
         }
     }
-    @GetMapping("/validate")
-    @Operation(summary = "Валидация токена аутентификации", description = "Проверяет корректность и срок действия переданного JWT токена")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Токен валиден"),
-            @ApiResponse(responseCode = "401", description = "Токен недействителен или отсутствует")
-    })
-    public String validateToken(
-            @Parameter(description = "JWT токен для валидации", required = true)
-            @RequestParam("token") String token
-    ) {
-        service.validateToken(token);
-        return "Token is valid";
-    }
 }
