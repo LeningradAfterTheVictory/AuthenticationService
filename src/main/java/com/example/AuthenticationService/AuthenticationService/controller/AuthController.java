@@ -33,7 +33,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь успешно зарегистрирован"),
             @ApiResponse(responseCode = "422", description = "Не удалось зарегистрировать пользователя"),
-            @ApiResponse(responseCode = "400", description = "В начале или в конце логина/пароля есть пробел"),
+            @ApiResponse(responseCode = "400", description = "Неверный формат данных (наличие пробела в начале/конце логина/пароля)"),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
     public ResponseEntity<String> addNewUser(
