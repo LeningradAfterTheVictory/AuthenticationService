@@ -83,12 +83,18 @@ public class AuthController {
             return ResponseEntity.status(422).body("No user with this credentials");
         }
 
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authRequest.getUsername(),
-                        authRequest.getPassword()
-                )
-        );
+        Authentication authenticate;
+
+        try {
+            authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authRequest.getUsername(),
+                            authRequest.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(422).body("Unauthorized");
+        }
 
         if (authenticate.isAuthenticated()) {
             String token = service.generateToken(authRequest.getUsername(), userId);
