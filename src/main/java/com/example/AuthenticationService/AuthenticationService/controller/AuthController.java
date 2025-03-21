@@ -79,6 +79,10 @@ public class AuthController {
     ) {
         Long userId = service.getUserIdByName(authRequest.getUsername());
 
+        if(userId == -1L) {
+            return ResponseEntity.status(422).body("No user with this credentials");
+        }
+
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getUsername(),

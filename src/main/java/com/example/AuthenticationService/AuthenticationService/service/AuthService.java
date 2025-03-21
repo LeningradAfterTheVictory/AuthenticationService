@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -25,7 +27,13 @@ public class AuthService {
     }
 
     public Long getUserIdByName(String name) {
-        return repository.findByNameOrEmail(name).get().getId();
+        Optional<UserCredential> user = repository.findByNameOrEmail(name);
+
+        if (user.isPresent()) {
+            return user.get().getId();
+        }
+
+        return -1L;
     }
 
     public String generateToken(String username, Long id) {
