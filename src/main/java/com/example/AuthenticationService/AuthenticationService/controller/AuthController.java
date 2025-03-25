@@ -1,7 +1,6 @@
 package com.example.AuthenticationService.AuthenticationService.controller;
 
 import com.example.AuthenticationService.AuthenticationService.dto.AuthRequest;
-import com.example.AuthenticationService.AuthenticationService.entity.UserCredential;
 import com.example.AuthenticationService.AuthenticationService.entity.UserCredentialDTO;
 import com.example.AuthenticationService.AuthenticationService.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,9 +8,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -99,12 +98,15 @@ public class AuthController {
         if (authenticate.isAuthenticated()) {
             String token = service.generateToken(authRequest.getUsername(), userId);
 
-            Cookie cookie = new Cookie("jwtAuth", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(1000 * 60 * 60 * 10);
+            ResponseCookie cookie = ResponseCookie.from("jwtAuth", token)
+                    .httpOnly(true)
+                    .path("/")
+                    .sameSite("Lax")
+                    .maxAge(1000 * 3600 * 10)
+                    .build();
 
-            response.addCookie(cookie);
+            response.addHeader("Set-Cookie", cookie.toString());
+
             return ResponseEntity.ok("Ok");
         } else {
             return ResponseEntity.status(422).body("Unauthorized");
