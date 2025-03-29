@@ -112,4 +112,23 @@ public class AuthController {
             return ResponseEntity.status(422).body("Unauthorized");
         }
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Выход пользователя из своего аккаунта", description = "Обнуляет время жизни куков до 0 и таким образом ограничивает действия пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно вышел из аккаунта"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+    })
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("jwtAuth", "no token")
+                .httpOnly(true)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        return ResponseEntity.status(200).build();
+    }
 }
