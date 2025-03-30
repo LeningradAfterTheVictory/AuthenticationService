@@ -120,7 +120,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Ошибка сервера")
     })
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        ResponseCookie cookie = ResponseCookie.from("jwtAuth", "no token")
+        ResponseCookie cookie = ResponseCookie.from("jwtAuth", "NoToken")
                 .httpOnly(true)
                 .path("/")
                 .sameSite("Lax")

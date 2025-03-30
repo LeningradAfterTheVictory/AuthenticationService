@@ -30,7 +30,7 @@ public class AuthConfig {
                     requestMatchers(
                             "/api/authentication/register",
                             "/api/authentication/token",
-                            "/api/authentication/validate",
+                            "/api/authentication/logout",
                             "/swagger-ui/**", 
                             "/v3/api-docs/**", 
                             "/swagger-resources/**", 
