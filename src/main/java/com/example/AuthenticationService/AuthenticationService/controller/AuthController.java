@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/authentication")
+@RequestMapping("/authentication")
 @Tag(name = "Auth Controller", description = "Контроллер для аутентификации и управления пользователями")
 public class AuthController {
     @Autowired
